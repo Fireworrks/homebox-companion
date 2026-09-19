@@ -10,6 +10,13 @@
 	import AppContainer from '$lib/components/AppContainer.svelte';
 	import { authStore } from '$lib/stores/auth.svelte';
 	import { collectionStore } from '$lib/stores/collection.svelte';
+	import { sortWorkflow } from '$lib/workflows/sort.svelte';
+
+	$effect(() => {
+		void collectionStore.selectedId;
+		void authStore.isAuthenticated;
+		sortWorkflow.reset();
+	});
 	import { uiStore, showToast } from '$lib/stores/ui.svelte';
 	import { getVersion, getConfig, setDemoMode } from '$lib/api';
 	import { setLogLevel } from '$lib/utils/logger';

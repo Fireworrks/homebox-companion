@@ -14,6 +14,7 @@ from .locations import router as locations_router
 from .logs import router as logs_router
 from .mcp import router as mcp_router
 from .qr import router as qr_router
+from .sort import router as sort_router
 from .tags import router as tags_router
 from .tools.vision import router as vision_router
 
@@ -21,6 +22,7 @@ from .tools.vision import router as vision_router
 api_router = APIRouter(prefix="/api")
 
 # Include all sub-routers
+api_router.include_router(sort_router, tags=["sort"])
 api_router.include_router(auth_router, tags=["auth"])
 api_router.include_router(chat_router, tags=["chat"])
 api_router.include_router(config_router, tags=["config"])

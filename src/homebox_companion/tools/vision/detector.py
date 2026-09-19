@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 
 from loguru import logger
 
+from ...ai.decisions import assign_tags, require_jev_configured
 from ...ai.images import encode_image_bytes_to_data_uri
 from ...ai.llm import vision_completion
 from ...ai.response_models import get_items_response_model
@@ -92,6 +93,8 @@ async def _detect_items_from_data_uris(
         output_language: Target language for AI output (default: English).
         custom_fields: Optional list of custom field definitions.
     """
+    require_jev_configured()
+
     if not image_data_uris:
         return []
 
@@ -150,4 +153,5 @@ async def _detect_items_from_data_uris(
                 f"model={item.model_number}, serial={item.serial_number}"
             )
 
+    await assign_tags(items, tags or [])
     return items

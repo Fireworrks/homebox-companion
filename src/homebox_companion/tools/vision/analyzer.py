@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 
 from loguru import logger
 
+from ...ai.decisions import assign_tags, require_jev_configured
 from ...ai.llm import vision_completion
 from ...ai.response_models import get_single_item_response_model
 from .models import DetectedItem, get_single_item_adapter
@@ -39,6 +40,8 @@ async def analyze_item_details_from_images(
         A validated DetectedItem with extracted fields.
     """
 
+    require_jev_configured()
+
     logger.info(f"Analyzing {len(image_data_uris)} images for item: {item_name}")
     logger.debug(f"Field preferences: {len(field_preferences) if field_preferences else 0}")
     logger.debug(f"Output language: {output_language or 'English (default)'}")
@@ -69,4 +72,5 @@ async def analyze_item_details_from_images(
 
     logger.info(f"Analysis complete. Fields: {list(item.model_fields.keys())}")
 
+    await assign_tags([item], tags or [])
     return item

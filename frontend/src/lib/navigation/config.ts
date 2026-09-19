@@ -10,7 +10,7 @@ export interface NavItem {
 	id: string;
 	label: string;
 	href: string;
-	icon: 'scan' | 'settings' | 'chat';
+	icon: 'scan' | 'settings' | 'chat' | 'sort';
 	/** Routes that should highlight this nav item as active */
 	activeRoutes: string[];
 	/** Whether this item is disabled */
@@ -49,6 +49,7 @@ export function getScanHref(workflowStatus: string): string {
  */
 export function getNavItems(scanHref: string, isDemoModeExplicit: boolean): NavItem[] {
 	return [
+		{ id: 'sort', label: 'Sort', href: '/sort', icon: 'sort', activeRoutes: ['/sort'] },
 		{
 			id: 'chat',
 			label: 'Chat',

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { NavItem } from '$lib/navigation/config';
-	import { ScanLine, Settings, MessageSquare } from 'lucide-svelte';
+	import { ScanLine, Settings, MessageSquare, Boxes } from 'lucide-svelte';
 
 	interface Props {
 		icon: NavItem['icon'];
@@ -13,7 +13,9 @@
 	let iconSize = $derived(size === 'sm' ? 16 : 24);
 </script>
 
-{#if icon === 'scan'}
+{#if icon === 'sort'}
+	<Boxes size={iconSize} strokeWidth={1.75} />
+{:else if icon === 'scan'}
 	<ScanLine size={iconSize} strokeWidth={1.75} />
 {:else if icon === 'settings'}
 	<Settings size={iconSize} strokeWidth={1.75} />

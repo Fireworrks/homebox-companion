@@ -41,7 +41,7 @@ from __future__ import annotations
 from enum import StrEnum
 from functools import lru_cache
 
-from pydantic import computed_field
+from pydantic import Field, computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # Demo server for testing - users should replace with their own instance
@@ -93,6 +93,11 @@ class Settings(BaseSettings):
     llm_model: str = ""
     llm_api_base: str | None = None
     llm_allow_unsafe_models: bool = False
+
+    jev_api_key: str = Field(default="", repr=False)
+    jev_timeout: float = Field(default=60, gt=0)
+    sort_confidence_threshold: float = Field(default=0.75, ge=0, le=1)
+    sort_box_together_threshold: float = Field(default=0.8, gt=0.5, le=1)
 
     # Web server configuration
     server_host: str = "0.0.0.0"
@@ -230,6 +235,8 @@ class Settings(BaseSettings):
                 "HBC_LLM_API_KEY is not set (and no legacy HBC_OPENAI_API_KEY fallback). "
                 "Vision detection will not work without an API key."
             )
+        if not self.jev_api_key.strip():
+            issues.append("HBC_JEV_API_KEY is required for tagging and Sort Mode.")
         return issues
 
 

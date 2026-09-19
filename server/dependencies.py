@@ -469,6 +469,9 @@ async def get_vision_context(
     Returns:
         VisionContext with all required data for vision endpoints.
     """
+    from homebox_companion.ai.decisions import require_jev_configured
+
+    require_jev_configured()
     token = await get_token(authorization)
 
     # Load field preferences from header if provided (demo mode), otherwise from file

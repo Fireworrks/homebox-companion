@@ -57,14 +57,19 @@ def get_model_capabilities(model: str) -> ModelCapabilities:
     """
     logger.info(f"Checking capabilities for model: {model}")
 
-    vision = litellm.supports_vision(model)
+    capability_model = model
+    if model.startswith("openrouter/") and model.endswith((":nitro", ":floor")):
+        # OpenRouter routing preferences are not separate model capabilities.
+        capability_model = model.rsplit(":", 1)[0]
+
+    vision = litellm.supports_vision(capability_model)
 
     # Note: multi_image is assumed True for vision models. Most modern vision
     # models (GPT-4o, Claude 3, Gemini) support multiple images. If a specific
     # model doesn't, it will fail at runtime with a clear error from the provider.
     multi_image = vision
 
-    structured_output = litellm.supports_response_schema(model)
+    structured_output = litellm.supports_response_schema(capability_model)
 
     logger.debug(
         f"Model '{model}' capabilities detected: "

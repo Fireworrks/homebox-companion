@@ -914,6 +914,7 @@ class HomeboxClient:
         query: str | None = None,
         page: int | None = None,
         page_size: int | None = None,
+        is_location: bool | None = None,
     ) -> dict[str, Any]:
         """List items with optional filtering, search, and pagination.
 
@@ -924,11 +925,14 @@ class HomeboxClient:
             query: Optional search query string.
             page: Optional page number (1-indexed).
             page_size: Optional number of items per page.
+            is_location: True to list locations, False or None to list items.
 
         Returns:
             Full paginated response: {items: [...], page, pageSize, total}
         """
         params = {}
+        if is_location is not None:
+            params["isLocation"] = str(is_location).lower()
         if location_id:
             params["parentIds"] = location_id
         if tag_ids:

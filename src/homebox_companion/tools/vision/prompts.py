@@ -11,7 +11,6 @@ from ...ai.prompts import (
     build_item_schema,
     build_language_instruction,
     build_naming_examples,
-    build_tag_prompt,
 )
 
 if TYPE_CHECKING:
@@ -57,7 +56,6 @@ def build_detection_system_prompt(
     extended_schema = build_extended_fields_schema(field_preferences) if extract_extended_fields else ""
     custom_schema = build_custom_fields_schema(custom_fields or [])
     naming_examples = build_naming_examples(field_preferences)
-    tag_prompt = build_tag_prompt(tags)
 
     return (
         # 1. Role + output format
@@ -73,8 +71,6 @@ def build_detection_system_prompt(
         f"{custom_schema}\n\n"
         # 5. Naming examples
         f"{naming_examples}\n\n"
-        # 6. Tags
-        f"{tag_prompt}"
     )
 
 
@@ -120,7 +116,7 @@ def build_detection_user_prompt(
         "List items that are the focus of this image. Return only JSON. "
         "Example: "
         '{"items":[{"name":"Claw Hammer","quantity":2,'
-        f'"description":"Steel claw hammer","tagIds":["id1"]{extended_example}'
+        f'"description":"Steel claw hammer"{extended_example}'
         "}]}." + user_hint
     )
 
@@ -156,7 +152,6 @@ def build_multi_image_system_prompt(
     extended_schema = build_extended_fields_schema(field_preferences) if extract_extended_fields else ""
     custom_schema = build_custom_fields_schema(custom_fields or [])
     naming_examples = build_naming_examples(field_preferences)
-    tag_prompt = build_tag_prompt(tags)
 
     multi_note = (
         "Analyzing multiple images of the same item."
@@ -178,8 +173,6 @@ def build_multi_image_system_prompt(
         f"{custom_schema}\n\n"
         # 5. Naming examples
         f"{naming_examples}\n\n"
-        # 6. Tags
-        f"{tag_prompt}"
     )
 
 
@@ -213,7 +206,6 @@ def build_discriminatory_system_prompt(
     extended_schema = build_extended_fields_schema(field_preferences) if extract_extended_fields else ""
     custom_schema = build_custom_fields_schema(custom_fields or [])
     naming_examples = build_naming_examples(field_preferences)
-    tag_prompt = build_tag_prompt(tags)
 
     return (
         # 1. Role + critical constraint
@@ -232,8 +224,6 @@ def build_discriminatory_system_prompt(
         f"{custom_schema}\n\n"
         # 5. Naming examples
         f"{naming_examples}\n\n"
-        # 6. Tags
-        f"{tag_prompt}"
     )
 
 
@@ -280,7 +270,6 @@ def build_analysis_system_prompt(
     field_preferences = field_preferences or {}
     language_instr = build_language_instruction(output_language)
     naming_examples = build_naming_examples(field_preferences)
-    tag_prompt = build_tag_prompt(tags)
     custom_schema = build_custom_fields_schema(custom_fields or [])
 
     # Build item context
@@ -314,10 +303,7 @@ def build_analysis_system_prompt(
         f"- manufacturer: string or null ({mfr_instr})\n"
         f"- purchasePrice: number or null ({price_instr})\n"
         f"- notes: string or null ({notes_instr})\n"
-        "- tagIds: array of applicable tag IDs\n"
         f"{custom_schema}\n\n"
         # 5. Naming
         f"{naming_examples}\n\n"
-        # 6. Tags
-        f"{tag_prompt}"
     )

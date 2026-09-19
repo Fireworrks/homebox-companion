@@ -117,8 +117,7 @@ def build_item_schema(customizations: dict[str, str]) -> str:
     return f"""OUTPUT SCHEMA - Each item must include:
 - name: string ({name_instr})
 - quantity: integer ({qty_instr})
-- description: string ({desc_instr})
-- tagIds: array of matching tag IDs"""
+- description: string ({desc_instr})"""
 
 
 def build_extended_fields_schema(customizations: dict[str, str]) -> str:

@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 
 from loguru import logger
 
+from ...ai.decisions import assign_tags, require_jev_configured
 from ...ai.llm import vision_completion
 from ...ai.prompts import (
     build_custom_fields_schema,
@@ -13,7 +14,6 @@ from ...ai.prompts import (
     build_item_schema,
     build_language_instruction,
     build_naming_examples,
-    build_tag_prompt,
 )
 from ...ai.response_models import get_items_response_model
 from .models import DetectedItem, get_items_adapter
@@ -51,6 +51,8 @@ async def correct_item(
         List of corrected DetectedItem instances (validated through Pydantic).
     """
 
+    require_jev_configured()
+
     logger.info(f"Correcting item '{current_item.get('name')}' with user instructions")
     logger.debug(f"User correction: {correction_instructions}")
     logger.debug(f"Field preferences: {len(field_preferences) if field_preferences else 0}")
@@ -66,7 +68,6 @@ async def correct_item(
     extended_schema = build_extended_fields_schema(field_preferences)
     custom_fields_schema = build_custom_fields_schema(custom_fields or [])
     naming_examples = build_naming_examples(field_preferences)
-    tag_prompt = build_tag_prompt(tags)
 
     system_prompt = (
         # 1. Role
@@ -87,8 +88,6 @@ async def correct_item(
         f"{custom_fields_schema}\n\n"
         # 6. Naming
         f"{naming_examples}\n\n"
-        # 7. Tags
-        f"{tag_prompt}"
     )
 
     # Build current item summary
@@ -125,4 +124,5 @@ async def correct_item(
     for item in items:
         logger.debug(f"  Corrected item: {item.name}, qty: {item.quantity}")
 
+    await assign_tags(items, tags or [])
     return items
